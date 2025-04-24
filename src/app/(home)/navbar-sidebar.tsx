@@ -33,6 +33,7 @@ export const NavbarSidebar = ({ items, open, onOpenChange }: Props) => {
               href={item.href}
               key={item.href}
               className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium"
+              onClick={() => onOpenChange(false)}
             >
               {item.children}
             </Link>
