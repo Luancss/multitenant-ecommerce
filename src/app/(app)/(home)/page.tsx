@@ -6,8 +6,14 @@ export default async function Home() {
   });
 
   const data = await payload.find({
-    collection: "users",
+    collection: "categories",
+    depth: 1,
+    where: {
+      parent: {
+        exists: false,
+      },
+    },
   });
 
-  return <div>{JSON.stringify(data)}</div>;
+  return <div>{JSON.stringify(data, null, 2)}</div>;
 }
