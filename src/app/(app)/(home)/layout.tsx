@@ -37,7 +37,7 @@ export default async function ({ children }: Props) {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <SearchFilters data={data} />
+      <SearchFilters data={formattedData} />
       <div className="flex-1">{children}</div>
       <Footer />
     </div>
