@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 import { getPayload } from "payload";
 import config from "@payload-config";
 
@@ -164,4 +166,11 @@ const seed = async () => {
   }
 };
 
-await seed();
+try {
+  await seed();
+  console.log("Seeded categories successfully");
+  process.exit(0);
+} catch (error) {
+  console.error("Error seeding categories:", error);
+  process.exit(1);
+}
