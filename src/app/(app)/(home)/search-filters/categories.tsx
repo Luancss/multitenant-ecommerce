@@ -1,10 +1,11 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { ListFilterIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { CustomCategory } from "../types";
 import { CategoryDropdown } from "./category-dropdown";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 interface Props {
   data: CustomCategory[];
@@ -108,7 +109,10 @@ export const Categories = ({ data }: Props) => {
                 !isAnyHovered &&
                 "bg-white border-primary"
             )}
-          ></Button>
+          >
+            Views All
+            <ListFilterIcon className="ml-2" size={16} />
+          </Button>
         </div>
       </div>
     </div>
