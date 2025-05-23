@@ -26,21 +26,41 @@ export const Categories = ({ data }: Props) => {
 
   useEffect(() => {
     const calculateVisible = () => {
-      if (containerRef.current && measureRef.current && viewsAllRef.current) {
-        const containerWidth = containerRef.current.offsetWidth;
-        const measureWidth = measureRef.current.offsetWidth;
-        const viewsAllWidth = viewsAllRef.current.offsetWidth;
-
-        const totalWidth = measureWidth + viewsAllWidth;
-
-        if (totalWidth > containerWidth) {
-          setVisibleCount((prev) => Math.max(prev - 1, 1));
-        } else {
-          setVisibleCount(data.length);
-        }
+      if (
+        !containerRef.current &&
+        !measureRef.current &&
+        !viewsAllRef.current
+      ) {
+        return;
       }
+
+      const containerWidth = containerRef.current?.offsetWidth;
+      const viewAllWidth = viewsAllRef.current?.offsetWidth;
+      const availableWidth = containerWidth! - viewAllWidth!;
+
+      const items = Array.from(measureRef.current?.children!);
+
+      let totalWidth = 0;
+      let visible = 0;
+
+      for (const item of items) {
+        const width = item.getBoundingClientRect().width;
+
+        if (totalWidth + width > availableWidth) break;
+        totalWidth += width;
+        visible++;
+      }
+
+      setVisibleCount(visible);
     };
-  }, []);
+
+    const resizeObserver = new ResizeObserver(() => {
+      calculateVisible();
+    });
+    resizeObserver.observe(containerRef.current!);
+    calculateVisible();
+    return () => resizeObserver.disconnect();
+  }, [data.length]);
 
   return (
     <div className="relative w-full">
