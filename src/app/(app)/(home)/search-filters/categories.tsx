@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { ListFilterIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { CustomCategory } from "../types";
+import { CategoriesSidebar } from "./categories-sidebar";
 import { CategoryDropdown } from "./category-dropdown";
 
 interface Props {
@@ -67,6 +68,12 @@ export const Categories = ({ data }: Props) => {
 
   return (
     <div className="relative w-full">
+      {/* Categories sidebar */}
+      <CategoriesSidebar
+        open={isSidebarOpen}
+        onOpenChange={setIsSidebarOpen}
+        data={data}
+      />
       {/* Hidden div to measure all items */}
       <div
         ref={measureRef}
@@ -109,6 +116,9 @@ export const Categories = ({ data }: Props) => {
                 !isAnyHovered &&
                 "bg-white border-primary"
             )}
+            onClick={() => {
+              setIsSidebarOpen(true);
+            }}
           >
             Views All
             <ListFilterIcon className="ml-2" size={16} />
