@@ -1,11 +1,13 @@
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
+import { ChevronLeftIcon, ChevronRight } from "lucide-react";
+import { useState } from "react";
 import { CustomCategory } from "../types";
 
 interface Props {
@@ -15,6 +17,15 @@ interface Props {
 }
 
 export const CategoriesSidebar = ({ open, onOpenChange, data }: Props) => {
+  const [parentCategories, setParentCategories] = useState<
+    CustomCategory[] | null
+  >(null);
+  const [selectedCategory, setSelectedCategory] =
+    useState<CustomCategory | null>(null);
+
+  // If we have parent Categories, show those, otherwise show root categories
+  const currentCategories = parentCategories ?? data ?? [];
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
@@ -25,14 +36,27 @@ export const CategoriesSidebar = ({ open, onOpenChange, data }: Props) => {
         <SheetHeader className="p-4 border-b">
           <SheetTitle>Categories</SheetTitle>
         </SheetHeader>
-        <ScrollArea className="h-full">
-          <div className="flex flex-col gap-2 p-4">
-            {data.map((category) => (
-              <div key={category.id} className="flex items-center gap-2">
-                <span>{category.name}</span>
-              </div>
-            ))}
-          </div>
+        <ScrollArea className="flex flex-col overflow-y-auto h-full pb-2">
+          {parentCategories && (
+            <button
+              onClick={() => {}}
+              className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium"
+            >
+              <ChevronLeftIcon className="size-4 mr-2" />
+              Back
+            </button>
+          )}
+          {currentCategories.map((category) => (
+            <button
+              key={category.slug}
+              className="w-full text-left p-4 hover:bg-black hover:text-white flex justify-between items-center text-base font-medium cursor-pointer"
+            >
+              {category.name}
+              {category.subcategories && category.subcategories.length > 0 && (
+                <ChevronRight className="size-4" />
+              )}
+            </button>
+          ))}
         </ScrollArea>
       </SheetContent>
     </Sheet>
