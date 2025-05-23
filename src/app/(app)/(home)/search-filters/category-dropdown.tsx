@@ -5,9 +5,10 @@ import { cn } from "@/lib/utils";
 import { useRef, useState } from "react";
 import { useDropdownPosition } from "./use-dropdown-position";
 import { SubcategoryMenu } from "./subcategory-menu";
+import { CustomCategory } from "../types";
 
 interface Props {
-  category: any;
+  category: CustomCategory;
   isActive?: boolean;
   isNavigationHovered?: boolean;
 }
