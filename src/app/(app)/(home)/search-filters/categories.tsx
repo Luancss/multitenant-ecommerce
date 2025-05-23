@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { CustomCategory } from "../types";
 import { CategoryDropdown } from "./category-dropdown";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface Props {
   data: CustomCategory[];
@@ -64,7 +66,12 @@ export const Categories = ({ data }: Props) => {
 
   return (
     <div className="relative w-full">
-      <div className="flex flex-nowrap items-center">
+      {/* Hidden div to measure all items */}
+      <div
+        ref={measureRef}
+        className="absolute opacity-0 pointer-events-none flex"
+        style={{ position: "fixed", top: -9999, left: -9999 }}
+      >
         {data.map((category) => (
           <div key={category.id} className="flex flex-col">
             <CategoryDropdown
@@ -74,6 +81,35 @@ export const Categories = ({ data }: Props) => {
             />
           </div>
         ))}
+      </div>
+
+      {/* Visible Items */}
+      <div
+        ref={containerRef}
+        onMouseEnter={() => setIsAnyHovered(true)}
+        onMouseLeave={() => setIsAnyHovered(false)}
+        className="flex flex-nowrap items-center"
+      >
+        {data.slice(0, visibleCount).map((category) => (
+          <div key={category.id} className="flex flex-col">
+            <CategoryDropdown
+              category={category}
+              isActive={activeCategory === category.slug}
+              isNavigationHovered={isAnyHovered}
+            />
+          </div>
+        ))}
+
+        <div ref={viewsAllRef} className="shrink-0">
+          <Button
+            className={cn(
+              "h-11 px-4 bg-transparent border-transparent rounded-full hover:bg-white hover:border-primary text-black",
+              isActiveCategoryHidden &&
+                !isAnyHovered &&
+                "bg-white border-primary"
+            )}
+          ></Button>
+        </div>
       </div>
     </div>
   );
