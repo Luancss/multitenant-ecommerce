@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/sheet";
 
 import { ChevronLeftIcon, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CustomCategory } from "../types";
 
@@ -17,6 +18,8 @@ interface Props {
 }
 
 export const CategoriesSidebar = ({ open, onOpenChange, data }: Props) => {
+  const router = useRouter();
+
   const [parentCategories, setParentCategories] = useState<
     CustomCategory[] | null
   >(null);
@@ -26,8 +29,37 @@ export const CategoriesSidebar = ({ open, onOpenChange, data }: Props) => {
   // If we have parent Categories, show those, otherwise show root categories
   const currentCategories = parentCategories ?? data ?? [];
 
+  const handleOpenChange = (open: boolean) => {
+    setSelectedCategory(null);
+    setParentCategories(null);
+    onOpenChange(open);
+  };
+
+  const handleCategoryClick = (category: CustomCategory) => {
+    if (category.subcategories && category.subcategories.length > 0) {
+      setParentCategories(category.subcategories as CustomCategory[]);
+      setSelectedCategory(category);
+    } else {
+      // This is a leaf category (no subcategories)
+      if (parentCategories && selectedCategory) {
+        // This is a subcategoru - navigate to /category/subcategory
+        router.push(`/${selectedCategory.slug}/${category.slug}`);
+      } else {
+        // This is a main category - navigate to /category
+        if (category.slug == "all") {
+          router.push("/");
+        } else {
+          // This is a root category - navigate to /category
+          router.push(`/${category.slug}`);
+        }
+      }
+
+      handleOpenChange(false);
+    }
+  };
+
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent
         side="left"
         className="p-0 transition-none"
@@ -49,6 +81,9 @@ export const CategoriesSidebar = ({ open, onOpenChange, data }: Props) => {
           {currentCategories.map((category) => (
             <button
               key={category.slug}
+              onClick={() => {
+                handleCategoryClick(category);
+              }}
               className="w-full text-left p-4 hover:bg-black hover:text-white flex justify-between items-center text-base font-medium cursor-pointer"
             >
               {category.name}
